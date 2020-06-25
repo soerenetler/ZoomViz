@@ -36,6 +36,7 @@
         </td>
       </tr>
     </table>
+
     <div id="sourrounding_div" style="width:100%;height:500px">
       <div id="my_container"></div>
       <canvas style="display: none" id="my_canvas"></canvas>
@@ -91,23 +92,28 @@ export default {
       var width = 1000
       console.log(width)
 
-      var div = document.getElementById("sourrounding_div");
+      var div = document.getElementById('sourrounding_div')
 
-      var canvas = document.getElementById("my_canvas");
+      var canvas = document.getElementById('my_canvas')
 
-      canvas.height = div.offsetHeight;
+      canvas.height = div.offsetHeight
 
-      canvas.width  = div.offsetWidth;
+      canvas.width = div.offsetWidth
 
-
-      WordCloud([this.$el.querySelector('#my_canvas'),this.$el.querySelector('#my_container')], {
-        list: this.wordcloud,
-        gridSize: Math.round((16 * width) / 1024),
-        weightFactor: function(size) {
-          return ((size * width * 20) / 1024)
-        },
-        drawOutOfBound: true 
-      })
+      WordCloud(
+        [
+          this.$el.querySelector('#my_canvas'),
+          this.$el.querySelector('#my_container')
+        ],
+        {
+          list: this.wordcloud,
+          gridSize: Math.round((16 * width) / 1024),
+          weightFactor: function(size) {
+            return (size * width * 20) / 1024
+          },
+          drawOutOfBound: true
+        }
+      )
     }
   },
 
@@ -186,5 +192,4 @@ a {
   width: inherit;
   height: inherit;
 }
-
 </style>

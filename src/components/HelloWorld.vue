@@ -1,114 +1,168 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <p>
-      For a guide and recipes on how to configure / customize this project,<br />
-      check out the
-      <a href="https://cli.vuejs.org" target="_blank" rel="noopener"
-        >vue-cli documentation</a
-      >.
-    </p>
-    <h3>Installed CLI Plugins</h3>
-    <ul>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-babel"
-          target="_blank"
-          rel="noopener"
-          >babel</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-router"
-          target="_blank"
-          rel="noopener"
-          >router</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-vuex"
-          target="_blank"
-          rel="noopener"
-          >vuex</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-cli/tree/dev/packages/%40vue/cli-plugin-eslint"
-          target="_blank"
-          rel="noopener"
-          >eslint</a
-        >
-      </li>
-    </ul>
-    <h3>Essential Links</h3>
-    <ul>
-      <li>
-        <a href="https://vuejs.org" target="_blank" rel="noopener">Core Docs</a>
-      </li>
-      <li>
-        <a href="https://forum.vuejs.org" target="_blank" rel="noopener"
-          >Forum</a
-        >
-      </li>
-      <li>
-        <a href="https://chat.vuejs.org" target="_blank" rel="noopener"
-          >Community Chat</a
-        >
-      </li>
-      <li>
-        <a href="https://twitter.com/vuejs" target="_blank" rel="noopener"
-          >Twitter</a
-        >
-      </li>
-      <li>
-        <a href="https://news.vuejs.org" target="_blank" rel="noopener">News</a>
-      </li>
-    </ul>
-    <h3>Ecosystem</h3>
-    <ul>
-      <li>
-        <a href="https://router.vuejs.org" target="_blank" rel="noopener"
-          >vue-router</a
-        >
-      </li>
-      <li>
-        <a href="https://vuex.vuejs.org" target="_blank" rel="noopener">vuex</a>
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/vue-devtools#vue-devtools"
-          target="_blank"
-          rel="noopener"
-          >vue-devtools</a
-        >
-      </li>
-      <li>
-        <a href="https://vue-loader.vuejs.org" target="_blank" rel="noopener"
-          >vue-loader</a
-        >
-      </li>
-      <li>
-        <a
-          href="https://github.com/vuejs/awesome-vue"
-          target="_blank"
-          rel="noopener"
-          >awesome-vue</a
-        >
-      </li>
-    </ul>
+
+    <table style="width:100%">
+      <tr>
+        <th>Choose Folder</th>
+        <th>Choose Meeting</th>
+        <th>Choose Method</th>
+      </tr>
+      <tr>
+        <td>
+          <button @click="selectFolder">Select Folder</button>
+        </td>
+        <td>
+          <select v-model="meeting">
+            <option disabled value="">Please select one</option>
+            <option
+              v-for="meetingOption in meetingOptions"
+              :key="meetingOption"
+              >{{ meetingOption }}</option
+            >
+          </select>
+        </td>
+
+        <td>
+          <input type="radio" id="#" value="#" v-model="method" />
+          <label for="#"># (Wordcloud)</label>
+          <br />
+          <input type="radio" id="!" value="!" v-model="method" />
+          <label for="!">! (Poll)</label>
+          <br />
+          <input type="radio" id="?" value="?" v-model="method" />
+          <label for="?">? (Question)</label>
+          <br />
+        </td>
+      </tr>
+    </table>
+    <div id="sourrounding_div" style="width:100%;height:500px">
+      <div id="my_container"></div>
+      <canvas style="display: none" id="my_canvas"></canvas>
+    </div>
   </div>
 </template>
 
 <script>
+import WordCloud from 'wordcloud'
+const { dialog } = window.require('electron').remote
+const fs = window.require('fs')
+
 export default {
-  name: "HelloWorld",
+  name: 'HelloWorld',
   props: {
     msg: String
+  },
+
+  data() {
+    return {
+      method: '',
+      meetingOptions: [],
+      zoomFolder: '',
+      meeting: ''
+    }
+  },
+
+  mounted() {},
+
+  methods: {
+    selectFolder: function() {
+      dialog
+        .showOpenDialog({ properties: ['openDirectory'] })
+        .then(result => {
+          console.log(result.canceled)
+          this.zoomFolder = result.filePaths[0]
+          console.log(result.filePaths)
+          this.meetingOptions = fs
+            .readdirSync(this.zoomFolder, { withFileTypes: true })
+            .filter(dirent => dirent.isDirectory())
+            .map(dirent => dirent.name)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
+  },
+
+  watch: {
+    wordcloud: function() {
+      console.log(this.wordcloud)
+      console.log(WordCloud.isSupported)
+      var width = 1000
+      console.log(width)
+
+      var div = document.getElementById("sourrounding_div");
+
+      var canvas = document.getElementById("my_canvas");
+
+      canvas.height = div.offsetHeight;
+
+      canvas.width  = div.offsetWidth;
+
+
+      WordCloud([this.$el.querySelector('#my_canvas'),this.$el.querySelector('#my_container')], {
+        list: this.wordcloud,
+        gridSize: Math.round((16 * width) / 1024),
+        weightFactor: function(size) {
+          return ((size * width * 20) / 1024)
+        },
+        drawOutOfBound: true 
+      })
+    }
+  },
+
+  computed: {
+    zoom_chat: function() {
+      if (this.ready) {
+        return fs
+          .readFileSync(
+            this.zoomFolder + '/' + this.meeting + '/' + this.zoom_filename
+          )
+          .toString()
+      } else {
+        return ''
+      }
+    },
+
+    ready: function() {
+      return this.zoomFolder != '' && this.meeting != '' && this.method != ''
+    },
+
+    zoom_filename: function() {
+      return 'meeting_saved_chat.txt'
+    },
+
+    proc_zoom_chat: function() {
+      var split_zoom_chat = this.zoom_chat.split('\n')
+      var proc_zoom_chat = []
+      for (var i in split_zoom_chat) {
+        var splitted_line = split_zoom_chat[i].split('	')
+        if (splitted_line.length == 2) {
+          var time = splitted_line[0]
+          var user = splitted_line[1].split(' : ')[0]
+          var message = splitted_line[1].split(' : ')[1]
+          proc_zoom_chat.push({ time: time, user: user, message: message })
+          console.log(time + ' --- ' + user + '---' + message)
+        } else {
+          console.log('line' + i + 'is skipped!')
+        }
+      }
+      return proc_zoom_chat
+    },
+    wordcloud: function() {
+      var wordcloud = {}
+      for (var i in this.proc_zoom_chat) {
+        if (!(this.proc_zoom_chat[i]['message'] in wordcloud)) {
+          wordcloud[this.proc_zoom_chat[i]['message']] = 0
+        }
+        wordcloud[this.proc_zoom_chat[i]['message']] += 1
+      }
+      console.log(wordcloud)
+      wordcloud = Object.entries(wordcloud)
+      return wordcloud
+    }
   }
-};
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -127,4 +181,10 @@ li {
 a {
   color: #42b983;
 }
+
+#my-container {
+  width: inherit;
+  height: inherit;
+}
+
 </style>

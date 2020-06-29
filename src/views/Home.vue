@@ -1,7 +1,7 @@
 <template>
   <div class="home">
     <HelloWorld msg="Welcome to ZoomViz" />
-    Current version: <span id="version">{{version}}</span>
+    Current version: <span id="version">{{ version }}</span>
     <div id="messages"></div>
   </div>
 </template>

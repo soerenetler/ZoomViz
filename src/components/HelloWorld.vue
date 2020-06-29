@@ -167,7 +167,7 @@ export default {
       var wordcloud = {}
       for (var i in this.proc_zoom_chat) {
         var word = this.truncate(this.proc_zoom_chat[i]['message'].trim(), 30)
-        if (word[0] == this.method || this.method == "all"){
+        if (word[0] == this.method || this.method == 'all') {
           if (!(word in wordcloud)) {
             wordcloud[word] = 0
           }

@@ -1,7 +1,7 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, dialog } from 'electron'
-import { autoUpdater } from "electron-updater"
+import { app, protocol, BrowserWindow } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import {
   createProtocol,
   installVueDevtools
@@ -81,14 +81,7 @@ app.on('ready', async () => {
       console.error('Vue Devtools failed to install:', e.toString())
     }
   } else {
-    const server = 'https://github.com/soerenetler/ZoomViz'
-    const url = `${server}/releases/${process.platform}/${app.getVersion()}`
-
-    autoUpdater.setFeedURL({ url })
-
-    setInterval(() => {
-      autoUpdater.checkForUpdates()
-    }, 60000)
+    autoUpdater.checkForUpdatesAndNotify()
   }
   createWindow()
 })
@@ -107,25 +100,3 @@ if (isDevelopment) {
     })
   }
 }
-
-autoUpdater.on('checking-for-update', () => {
-  sendStatusToWindow('Checking for update...');
-})
-autoUpdater.on('update-available', (info) => {
-  sendStatusToWindow('Update available.');
-})
-autoUpdater.on('update-not-available', (info) => {
-  sendStatusToWindow('Update not available.');
-})
-autoUpdater.on('error', (err) => {
-  sendStatusToWindow('Error in auto-updater. ' + err);
-})
-autoUpdater.on('download-progress', (progressObj) => {
-  let log_message = "Download speed: " + progressObj.bytesPerSecond;
-  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
-  log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
-  sendStatusToWindow(log_message);
-})
-autoUpdater.on('update-downloaded', (info) => {
-  sendStatusToWindow('Update downloaded');
-});

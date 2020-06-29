@@ -1,8 +1,8 @@
 {
   "name": "zoom-viz",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "private": true,
-  "description": "ZoomViz is an easy to use tool to create visualisations from your zoom chat. It ",
+  "description": "ZoomViz is an easy to use tool to create visualisations from your zoom chat.",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

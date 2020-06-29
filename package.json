@@ -1,7 +1,8 @@
 {
-  "name": "real-world-vue",
-  "version": "0.1.1",
+  "name": "zoom-viz",
+  "version": "0.1.2",
   "private": true,
+  "description": "ZoomViz is an easy to use tool to create visualisations from your zoom chat. It ",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -17,7 +18,8 @@
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "vuex": "^3.4.0",
-    "wordcloud": "1.1.1"
+    "wordcloud": "1.1.1",
+    "electron-updater": "^1.5.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

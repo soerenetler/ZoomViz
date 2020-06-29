@@ -24,6 +24,9 @@
         </td>
 
         <td>
+          <input type="radio" id="all" value="all" v-model="method" />
+          <label for="all">All (Wordcloud)</label>
+          <br />
           <input type="radio" id="#" value="#" v-model="method" />
           <label for="#"># (Wordcloud)</label>
           <br />
@@ -82,6 +85,9 @@ export default {
         .catch(err => {
           console.log(err)
         })
+    },
+    truncate: function(str, n) {
+      return str.length > n ? str.substr(0, n - 1) + '...' : str
     }
   },
 
@@ -111,7 +117,9 @@ export default {
           weightFactor: function(size) {
             return (size * width * 20) / 1024
           },
-          drawOutOfBound: true
+          drawOutOfBound: true,
+          shape: 'square',
+          rotateRatio: 0.2
         }
       )
     }
@@ -158,10 +166,13 @@ export default {
     wordcloud: function() {
       var wordcloud = {}
       for (var i in this.proc_zoom_chat) {
-        if (!(this.proc_zoom_chat[i]['message'] in wordcloud)) {
-          wordcloud[this.proc_zoom_chat[i]['message']] = 0
+        var word = this.truncate(this.proc_zoom_chat[i]['message'].trim(), 30)
+        if (word[0] == this.method || this.method == "all"){
+          if (!(word in wordcloud)) {
+            wordcloud[word] = 0
+          }
+          wordcloud[word] += 1
         }
-        wordcloud[this.proc_zoom_chat[i]['message']] += 1
       }
       console.log(wordcloud)
       wordcloud = Object.entries(wordcloud)

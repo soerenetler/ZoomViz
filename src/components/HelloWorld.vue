@@ -63,13 +63,35 @@ export default {
       method: '',
       meetingOptions: [],
       zoomFolder: '',
-      meeting: ''
+      meeting: '',
+      polling: null,
+      zoom_chat: ''
     }
+  },
+  created() {
+    this.pollData()
   },
 
   mounted() {},
 
+  beforeDestroy() {
+    clearInterval(this.polling)
+  },
+
   methods: {
+    pollData() {
+      this.polling = setInterval(() => {
+        console.log('RETRIEVE_DATA_FROM_BACKEND')
+        if (this.ready) {
+          this.zoom_chat = fs
+            .readFileSync(
+              this.zoomFolder + '/' + this.meeting + '/' + this.zoom_filename
+            )
+            .toString()
+        }
+      }, 3000)
+    },
+
     selectFolder: function() {
       dialog
         .showOpenDialog({ properties: ['openDirectory'] })
@@ -126,18 +148,6 @@ export default {
   },
 
   computed: {
-    zoom_chat: function() {
-      if (this.ready) {
-        return fs
-          .readFileSync(
-            this.zoomFolder + '/' + this.meeting + '/' + this.zoom_filename
-          )
-          .toString()
-      } else {
-        return ''
-      }
-    },
-
     ready: function() {
       return this.zoomFolder != '' && this.meeting != '' && this.method != ''
     },

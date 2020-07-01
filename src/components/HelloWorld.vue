@@ -4,8 +4,6 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
-
-    <h1>{{ msg }}</h1>
     <table style="width:100%">
       <tr>
         <th>
@@ -196,7 +194,7 @@ export default {
           weightFactor: function(size) {
             return (size * width * 20) / 1024
           },
-          drawOutOfBound: true,
+          drawOutOfBound: false,
           shape: 'square',
           rotateRatio: 0.2
         }
@@ -274,29 +272,32 @@ a {
 button {
   height: 40px;
   border-radius: 10px;
-  background-color: #4caf50; /* Green */
-  color: white;
+  background-color: white;
+  color: #4caf50;
+  border: 2px solid #4caf50; /* Green */
+  
   transition-duration: 0.4s;
-  border: 2px solid white; /* Green */
+  
 }
 
 button:hover {
-  background-color: white;
-  color: black;
-  border: 2px solid #4caf50; /* Green */
+  background-color: #4caf50; /* Green */
+  color: white;
+  border: 2px solid white; /* Green */
 }
 
 select {
-  border: 2px solid white; /* Green */
-  color: white;
-  background-color: #4caf50; /* Green */
+  
+  border: 2px solid #4caf50; /* Green */
+  color: #4caf50;
+  background-color: white; /* Green */
   border-radius: 10px;
   height: 40px;
 }
 select:hover {
-  border: 2px solid #4caf50; /* Green */
-  color: #4caf50;
-  background-color: white; /* Green */
+  border: 2px solid white; /* Green */
+  color: white;
+  background-color: #4caf50; /* Green */
   border-radius: 10px;
   height: 40px;
 }

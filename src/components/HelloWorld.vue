@@ -1,26 +1,56 @@
 <template>
   <div class="hello">
-    <h1>{{ msg }}</h1>
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+    />
 
+    <h1>{{ msg }}</h1>
     <table style="width:100%">
       <tr>
-        <th>Choose Folder</th>
-        <th>Choose Meeting</th>
-        <th>Choose Method</th>
+        <th>
+          Choose Folder<span
+            class="material-icons"
+            title="The Zoom folder can normally be found in your Documents directory."
+            >info</span
+          >
+        </th>
+        <th>
+          Choose Meeting<span
+            class="material-icons"
+            title="The Zoom folder can normally be found in your Documents directory."
+            >info</span
+          >
+        </th>
+        <th>
+          Choose Method<span
+            class="material-icons"
+            title="The Zoom folder can normally be found in your Documents directory."
+            >info</span
+          >
+        </th>
       </tr>
       <tr>
         <td>
+          <div>Current Zoom Folder: {{ zoomFolder }}</div>
+          <br />
           <button @click="selectFolder">Select Folder</button>
         </td>
         <td>
           <select v-model="meeting">
-            <option disabled value="">Please select one</option>
+            <option disabled value="">Select Meeting</option>
             <option
               v-for="meetingOption in meetingOptions"
               :key="meetingOption"
               >{{ meetingOption }}</option
             >
           </select>
+          <br />
+          <br />
+          <div class="warning" v-if="folderWithoutChatWarning">
+            <strong>Warning!</strong> The folder does not contain a saved
+            meeting chat!
+          </div>
         </td>
 
         <td>
@@ -51,6 +81,7 @@
 import WordCloud from 'wordcloud'
 const { dialog } = window.require('electron').remote
 const fs = window.require('fs')
+const path = require('path')
 
 export default {
   name: 'HelloWorld',
@@ -65,11 +96,29 @@ export default {
       zoomFolder: '',
       meeting: '',
       polling: null,
-      zoom_chat: ''
+      zoom_chat: '',
+      folderWithoutChatWarning: false
     }
   },
   created() {
     this.pollData()
+
+    // Auto select Zoom Folder
+    if (
+      process.env.USERPROFILE &&
+      fs.existsSync(
+        path.resolve(process.env.USERPROFILE, '/Documents/Zoom').toString()
+      )
+    ) {
+      this.zoomFolder = path
+        .resolve(process.env.USERPROFILE, '/Documents/Zoom')
+        .toString()
+    } else {
+      console.log(
+        'Auto Zoom Folder does not exist: ' +
+          path.resolve(process.env.USERPROFILE, '/Documents/Zoom').toString()
+      )
+    }
   },
 
   mounted() {},
@@ -114,6 +163,14 @@ export default {
   },
 
   watch: {
+    meeting: function() {
+      this.folderWithoutChatWarning = !fs.existsSync(
+        path
+          .resolve(this.zoomFolder, this.meeting, this.zoom_filename)
+          .toString()
+      )
+    },
+
     wordcloud: function() {
       console.log(this.wordcloud)
       console.log(WordCloud.isSupported)
@@ -212,5 +269,45 @@ a {
 #my-container {
   width: inherit;
   height: inherit;
+}
+
+button {
+  height: 40px;
+  border-radius: 10px;
+  background-color: #4caf50; /* Green */
+  color: white;
+  transition-duration: 0.4s;
+  border: 2px solid white; /* Green */
+}
+
+button:hover {
+  background-color: white;
+  color: black;
+  border: 2px solid #4caf50; /* Green */
+}
+
+select {
+  border: 2px solid white; /* Green */
+  color: white;
+  background-color: #4caf50; /* Green */
+  border-radius: 10px;
+  height: 40px;
+}
+select:hover {
+  border: 2px solid #4caf50; /* Green */
+  color: #4caf50;
+  background-color: white; /* Green */
+  border-radius: 10px;
+  height: 40px;
+}
+
+.warning {
+  color: red;
+  font-size: small;
+}
+
+.material-icons {
+  font-size: small;
+  vertical-align: super;
 }
 </style>

@@ -1,6 +1,6 @@
 {
   "name": "zoom-viz",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "description": "ZoomViz is an easy to use tool to create visualisations from your zoom chat.",
   "author": "Sören Etler",

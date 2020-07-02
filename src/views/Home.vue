@@ -1,25 +1,32 @@
 <template>
   <div class="home">
-    <HelloWorld msg="Welcome to ZoomViz" />
-    Current version: <span id="version">{{ version }}</span>
-    <div id="messages"></div>
+    <Options @updateChat="chat = $event" @updateMethod="method = $event" />
+    <Wordcloud :chat="chat" :method="method" />
+    <Footer />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue'
+import Options from '@/components/Options.vue'
+import Footer from '@/components/Footer.vue'
+import Wordcloud from '@/components/Wordcloud.vue'
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld
+    Options,
+    Footer,
+    Wordcloud
   },
 
-  computed: {
-    version: function() {
-      return window.require('electron').remote.app.getVersion()
+  data() {
+    return {
+      chat: [],
+      method: 'all'
     }
   }
 }
 </script>
+
+<style scoped></style>

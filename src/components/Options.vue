@@ -7,21 +7,24 @@
     <table style="width:100%">
       <tr>
         <th>
-          Choose Folder<span
+          Choose Folder
+          <span
             class="material-icons"
             title="The Zoom folder can normally be found in your Documents directory."
             >info</span
           >
         </th>
         <th>
-          Choose Meeting<span
+          Choose Meeting
+          <span
             class="material-icons"
             title="The Zoom folder can normally be found in your Documents directory."
             >info</span
           >
         </th>
         <th>
-          Choose Method<span
+          Choose Method
+          <span
             class="material-icons"
             title="The Zoom folder can normally be found in your Documents directory."
             >info</span
@@ -30,63 +33,54 @@
       </tr>
       <tr>
         <td>
-          <div>Current Zoom Folder: {{ zoomFolder }}</div>
-          <br />
-          <button @click="selectFolder">Select Folder</button>
+          <div>{{ zoomFolder }}</div>
         </td>
         <td>
-          <select v-model="meeting">
-            <option disabled value="">Select Meeting</option>
-            <option
-              v-for="meetingOption in meetingOptions"
-              :key="meetingOption"
-              >{{ meetingOption }}</option
-            >
-          </select>
-          <br />
-          <br />
           <div class="warning" v-if="folderWithoutChatWarning">
             <strong>Warning!</strong> The folder does not contain a saved
             meeting chat!
           </div>
         </td>
 
+        <td></td>
+      </tr>
+
+      <tr>
         <td>
-          <input type="radio" id="all" value="all" v-model="method" />
-          <label for="all">All (Wordcloud)</label>
-          <br />
-          <input type="radio" id="#" value="#" v-model="method" />
-          <label for="#"># (Wordcloud)</label>
-          <br />
-          <input type="radio" id="!" value="!" v-model="method" />
-          <label for="!">! (Poll)</label>
-          <br />
-          <input type="radio" id="?" value="?" v-model="method" />
-          <label for="?">? (Question)</label>
-          <br />
+          <button @click="selectFolder">Select Folder</button>
+        </td>
+        <td>
+          <select v-model="meeting">
+            <option disabled value="">Select meeting</option>
+            <option
+              v-for="meetingOption in meetingOptions"
+              :key="meetingOption"
+              >{{ meetingOption }}</option
+            >
+          </select>
+        </td>
+
+        <td>
+          <select v-model="method">
+            <option disabled value="">Select marker</option>
+            <option value="all">All (Wordcloud)</option>
+            <option value="#"># (Wordcloud)</option>
+            <option value="!">! (Poll)</option>
+            <option value="?">? (Question)</option>
+          </select>
         </td>
       </tr>
     </table>
-
-    <div id="sourrounding_div" style="width:100%;height:500px">
-      <div id="my_container"></div>
-      <canvas style="display: none" id="my_canvas"></canvas>
-    </div>
   </div>
 </template>
 
 <script>
-import WordCloud from 'wordcloud'
 const { dialog } = window.require('electron').remote
 const fs = window.require('fs')
 const path = require('path')
 
 export default {
-  name: 'HelloWorld',
-  props: {
-    msg: String
-  },
-
+  name: 'Options',
   data() {
     return {
       method: '',
@@ -126,7 +120,7 @@ export default {
   },
 
   methods: {
-    pollData() {
+    pollData: function() {
       this.polling = setInterval(() => {
         console.log('RETRIEVE_DATA_FROM_BACKEND')
         if (this.ready) {
@@ -154,9 +148,6 @@ export default {
         .catch(err => {
           console.log(err)
         })
-    },
-    truncate: function(str, n) {
-      return str.length > n ? str.substr(0, n - 1) + '...' : str
     }
   },
 
@@ -169,36 +160,17 @@ export default {
       )
     },
 
-    wordcloud: function() {
-      console.log(this.wordcloud)
-      console.log(WordCloud.isSupported)
-      var width = 1000
-      console.log(width)
-
-      var div = document.getElementById('sourrounding_div')
-
-      var canvas = document.getElementById('my_canvas')
-
-      canvas.height = div.offsetHeight
-
-      canvas.width = div.offsetWidth
-
-      WordCloud(
-        [
-          this.$el.querySelector('#my_canvas'),
-          this.$el.querySelector('#my_container')
-        ],
-        {
-          list: this.wordcloud,
-          gridSize: Math.round((16 * width) / 1024),
-          weightFactor: function(size) {
-            return (size * width * 20) / 1024
-          },
-          drawOutOfBound: false,
-          shape: 'square',
-          rotateRatio: 0.2
-        }
-      )
+    proc_zoom_chat: {
+      handler: function(newChat) {
+        this.$emit('updateChat', newChat)
+      },
+      deep: true
+    },
+    method: {
+      handler: function(newMethod) {
+        this.$emit('updateMethod', newMethod)
+      },
+      deep: true
     }
   },
 
@@ -227,21 +199,6 @@ export default {
         }
       }
       return proc_zoom_chat
-    },
-    wordcloud: function() {
-      var wordcloud = {}
-      for (var i in this.proc_zoom_chat) {
-        var word = this.truncate(this.proc_zoom_chat[i]['message'].trim(), 30)
-        if (word[0] == this.method || this.method == 'all') {
-          if (!(word in wordcloud)) {
-            wordcloud[word] = 0
-          }
-          wordcloud[word] += 1
-        }
-      }
-      console.log(wordcloud)
-      wordcloud = Object.entries(wordcloud)
-      return wordcloud
     }
   }
 }
@@ -249,9 +206,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h3 {
-  margin: 40px 0 0;
-}
 ul {
   list-style-type: none;
   padding: 0;
@@ -264,9 +218,9 @@ a {
   color: #42b983;
 }
 
-#my-container {
-  width: inherit;
-  height: inherit;
+table {
+  table-layout: fixed;
+  grid-row: 2;
 }
 
 button {
@@ -275,9 +229,8 @@ button {
   background-color: white;
   color: #4caf50;
   border: 2px solid #4caf50; /* Green */
-  
+
   transition-duration: 0.4s;
-  
 }
 
 button:hover {
@@ -287,7 +240,6 @@ button:hover {
 }
 
 select {
-  
   border: 2px solid #4caf50; /* Green */
   color: #4caf50;
   background-color: white; /* Green */
@@ -310,5 +262,9 @@ select:hover {
 .material-icons {
   font-size: small;
   vertical-align: super;
+}
+
+#sourrounding_div {
+  grid-row: 3;
 }
 </style>

@@ -15,10 +15,15 @@
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+
+  display: grid;
+  grid-gap: 10px;
+  grid-template-rows: min-content min-content 1fr min-content;
 }
 
 #nav {
   padding: 30px;
+  grid-row: 1;
 }
 
 #nav a {

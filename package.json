@@ -5,8 +5,8 @@
   "description": "ZoomViz is an easy to use tool to create visualisations from your zoom chat.",
   "author": "Sören Etler",
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com:soerenetler/ZoomViz.git"
+    "type": "git",
+    "url": "https://github.com:soerenetler/ZoomViz.git"
   },
   "scripts": {
     "serve": "vue-cli-service serve",

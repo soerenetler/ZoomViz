@@ -1,9 +1,14 @@
 {
   "name": "zoom-viz",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "private": true,
   "description": "ZoomViz is an easy to use tool to create visualisations from your zoom chat.",
   "author": "Sören Etler",
+  "build": {
+    "win": {
+      "target": "portable"
+    }
+  },
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",

@@ -1,8 +1,8 @@
 {
-  "name": "zoom-viz",
+  "name": "Chattarize",
   "version": "0.2.8",
   "private": true,
-  "description": "ZoomViz is an easy to use tool to create visualisations from your zoom chat.",
+  "description": "Chattarize is an easy to use tool to create visualisations from your zoom chat.",
   "author": "Sören Etler",
   "repository": {
     "type": "git",

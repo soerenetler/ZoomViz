@@ -1,7 +1,11 @@
 <template>
   <span id="footer">
-    Current version: <span id="version">{{ version }}</span>
+    Chattarize <span id="version">{{ version }}</span> - chattarize.de - hello@soeren101.de
     <div id="messages"></div>
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </div>
   </span>
 </template>
 

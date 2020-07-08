@@ -50,8 +50,8 @@
           <button @click="selectFolder">Select Folder</button>
         </td>
         <td>
-          <select v-model="meeting">
-            <option disabled value="">Select meeting</option>
+          <select id="meetingSelect" v-model="meeting">
+            <option value='' disabled>Select Meeting</option>
             <option
               v-for="meetingOption in meetingOptions"
               :key="meetingOption"
@@ -62,7 +62,6 @@
 
         <td>
           <select v-model="method">
-            <option disabled value="">Select marker</option>
             <option value="all">All (Wordcloud)</option>
             <option value="#"># (Wordcloud)</option>
             <option value="!">! (Poll)</option>
@@ -75,7 +74,7 @@
 </template>
 
 <script>
-const { dialog } = window.require('electron').remote
+const { dialog, app } = window.require('electron').remote
 const fs = window.require('fs')
 const path = require('path')
 
@@ -83,7 +82,7 @@ export default {
   name: 'Options',
   data() {
     return {
-      method: '',
+      method: 'all',
       meetingOptions: [],
       zoomFolder: '',
       meeting: '',
@@ -97,23 +96,24 @@ export default {
 
     // Auto select Zoom Folder
     if (
-      process.env.USERPROFILE &&
+      app.getPath('documents') &&
       fs.existsSync(
-        path.resolve(process.env.USERPROFILE, '/Documents/Zoom').toString()
+        path.resolve(app.getPath('documents'), 'Zoom').toString()
       )
     ) {
       this.zoomFolder = path
-        .resolve(process.env.USERPROFILE, '/Documents/Zoom')
+        .resolve(app.getPath('documents'), 'Zoom')
         .toString()
     } else {
       console.log(
         'Auto Zoom Folder does not exist: ' +
-          path.resolve(process.env.USERPROFILE, '/Documents/Zoom').toString()
+          path.resolve(app.getPath('documents'), 'Zoom').toString()
       )
     }
   },
 
-  mounted() {},
+  mounted() {
+  },
 
   beforeDestroy() {
     clearInterval(this.polling)
@@ -144,6 +144,8 @@ export default {
             .readdirSync(this.zoomFolder, { withFileTypes: true })
             .filter(dirent => dirent.isDirectory())
             .map(dirent => dirent.name)
+            .reverse()
+          this.meeting = this.meetingOptions[0]
         })
         .catch(err => {
           console.log(err)
@@ -206,6 +208,10 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#meetingSelect {
+  width: 75%;
+}
+
 ul {
   list-style-type: none;
   padding: 0;
@@ -262,9 +268,5 @@ select:hover {
 .material-icons {
   font-size: small;
   vertical-align: super;
-}
-
-#sourrounding_div {
-  grid-row: 3;
 }
 </style>

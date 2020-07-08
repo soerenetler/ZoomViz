@@ -1,5 +1,5 @@
 <template>
-  <div id="sourrounding_div">
+  <div id="wordcloud">
     <div id="my_container"></div>
     <canvas style="display: none" id="my_canvas"></canvas>
   </div>
@@ -51,7 +51,7 @@ export default {
       var width = 1000
       console.log(width)
 
-      var div = document.getElementById('sourrounding_div')
+      var div = document.getElementById('wordcloud')
 
       var canvas = document.getElementById('my_canvas')
 
@@ -81,4 +81,10 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>
+<style scoped>
+#my_container{
+  height: 100%;
+  width: 100%;
+}
+
+</style>

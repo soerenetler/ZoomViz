@@ -9,7 +9,7 @@ module.exports = {
         },
         win: {
           publish: 'github',
-          target: 'portable'
+          //target: 'portable'
         }
 
         // options placed here will be merged with default configuration and passed to electron-builder

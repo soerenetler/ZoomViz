@@ -29,9 +29,10 @@ async function createWindow() {
       // See nklayman.github.io/vue-cli-plugin-electron-builder/guide/security.html#node-integration for more info
       //nodeIntegration: process.env.ELECTRON_NODE_INTEGRATION
       nodeIntegration: true,
-      nodeIntegrationInWorker: true
+      //nodeIntegrationInWorker: true
     }
   })
+  //win.removeMenu()
 
   if (process.env.WEBPACK_DEV_SERVER_URL) {
     // Load the url of the dev server if in development mode
@@ -81,6 +82,31 @@ app.on('ready', async () => {
   }
   createWindow()
 })
+
+autoUpdater.on('checking-for-update', () => {
+  console.log('Checking for update...');
+})
+autoUpdater.on('update-available', (info) => {
+  console.log('Update available.');
+  console.log(info)
+})
+autoUpdater.on('update-not-available', (info) => {
+  console.log('Update not available.');
+  console.log(info)
+})
+autoUpdater.on('error', (err) => {
+  console.log('Error in auto-updater. ' + err);
+})
+autoUpdater.on('download-progress', (progressObj) => {
+  let log_message = "Download speed: " + progressObj.bytesPerSecond;
+  log_message = log_message + ' - Downloaded ' + progressObj.percent + '%';
+  log_message = log_message + ' (' + progressObj.transferred + "/" + progressObj.total + ')';
+  console.log(log_message);
+})
+autoUpdater.on('update-downloaded', (info) => {
+  console.log('Update downloaded');
+  console.log(info)
+});
 
 // Exit cleanly on request from parent process in development mode.
 if (isDevelopment) {

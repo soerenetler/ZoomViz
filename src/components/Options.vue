@@ -93,21 +93,31 @@ export default {
   },
   created() {
     this.pollData()
-
     // Auto select Zoom Folder
     if (
-      app.getPath('documents') &&
+      app.getPath('home') &&
       fs.existsSync(
-        path.resolve(app.getPath('documents'), 'Zoom').toString()
+        path.resolve(app.getPath('home'),'Documents', 'Zoom').toString()
+      )
+    ) {
+      this.zoomFolder = path
+        .resolve(app.getPath('home'),'Documents', 'Zoom')
+        .toString()
+      this.load_meeting_options()
+    } else if (
+      app.getPath('home') &&
+      fs.existsSync(
+        app.getPath('documents') + "\\" + 'Zoom'
       )
     ) {
       this.zoomFolder = path
         .resolve(app.getPath('documents'), 'Zoom')
         .toString()
+      this.load_meeting_options()
     } else {
       console.log(
         'Auto Zoom Folder does not exist: ' +
-          path.resolve(app.getPath('documents'), 'Zoom').toString()
+          path.resolve(app.getPath('home'),'Documents', 'Zoom').toString()
       )
     }
   },
@@ -133,6 +143,15 @@ export default {
       }, 3000)
     },
 
+  load_meeting_options: function() {
+      this.meetingOptions = fs
+          .readdirSync(this.zoomFolder, { withFileTypes: true })
+          .filter(dirent => dirent.isDirectory())
+          .map(dirent => dirent.name)
+          .reverse()
+      this.meeting = this.meetingOptions[0]
+  },
+
     selectFolder: function() {
       dialog
         .showOpenDialog({ properties: ['openDirectory'] })
@@ -140,12 +159,7 @@ export default {
           console.log(result.canceled)
           this.zoomFolder = result.filePaths[0]
           console.log(result.filePaths)
-          this.meetingOptions = fs
-            .readdirSync(this.zoomFolder, { withFileTypes: true })
-            .filter(dirent => dirent.isDirectory())
-            .map(dirent => dirent.name)
-            .reverse()
-          this.meeting = this.meetingOptions[0]
+          this.load_meeting_options()
         })
         .catch(err => {
           console.log(err)

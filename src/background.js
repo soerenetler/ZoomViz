@@ -7,8 +7,13 @@ import installExtension, {
   JQUERY_DEBUGGER,
   VUEJS_DEVTOOLS
 } from 'electron-devtools-installer'
+import { log } from 'electron-log'
 
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
+// Setup logger
+autoUpdater.logger = require('electron-log')
+autoUpdater.logger.transports.file.level = 'info'
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.

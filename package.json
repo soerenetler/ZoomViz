@@ -1,6 +1,6 @@
 {
   "name": "Chattarize",
-  "version": "0.2.9",
+  "version": "0.2.10",
   "private": true,
   "description": "Chattarize is an easy to use tool to create visualisations from your zoom chat.",
   "author": "Sören Etler",
@@ -22,6 +22,7 @@
     "core-js": "^3.6.5",
     "electron-builder-util": "^19.24.0",
     "electron-updater": "^4.3.3",
+    "electron-log":"^4.2.2",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
     "wordcloud": "1.1.1"

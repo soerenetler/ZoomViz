@@ -134,9 +134,7 @@ export default {
         console.log('RETRIEVE_DATA_FROM_BACKEND')
         if (this.ready) {
           this.zoom_chat = fs
-            .readFileSync(
-              this.zoomFolder + '/' + this.meeting + '/' + this.zoom_filename
-            )
+            .readFileSync(path.join(this.zoomFolder, this.meeting, this.zoom_filename))
             .toString()
         }
       }, 3000)
@@ -185,7 +183,7 @@ export default {
     folderWithoutChatWarning: function() {
       return !fs.existsSync(
         path
-          .resolve(this.zoomFolder, this.meeting, this.zoom_filename)
+          .join(this.zoomFolder, this.meeting, this.zoom_filename)
           .toString()
       )
     },

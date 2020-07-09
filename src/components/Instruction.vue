@@ -3,7 +3,7 @@
     Please, write your answer
     <span v-if="showprefix()"> prefixed with a "{{ method }}" </span> in the
     chat.
-    <br>
+    <br />
     Keep it short and simple! One response per message!
     <div id="messages"></div>
   </span>
@@ -14,13 +14,13 @@ export default {
   name: 'Instruction',
 
   props: {
-    method: String
+    method: String,
   },
   methods: {
-    showprefix: function() {
-      return !(this.method == "all")
-    }
-  }
+    showprefix: function () {
+      return !(this.method == 'all')
+    },
+  },
 }
 </script>
 

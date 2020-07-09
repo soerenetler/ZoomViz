@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <router-view />
-  <Footer/>
+    <Footer />
   </div>
 </template>
 
@@ -12,8 +12,8 @@ import Footer from '@/components/Footer.vue'
 export default {
   name: 'Home',
   components: {
-    Footer
-  }
+    Footer,
+  },
 }
 </script>
 
@@ -24,7 +24,7 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  height:calc(100vh - 20px);
+  height: calc(100vh - 20px);
   display: grid;
   grid-gap: 10px;
   grid-template-rows: 1fr min-content;
@@ -35,7 +35,7 @@ Footer {
   grid-row: 2;
 }
 
-router-view{
+router-view {
   grid-row: 1;
 }
 

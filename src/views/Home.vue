@@ -17,48 +17,50 @@ export default {
   components: {
     Options,
     Wordcloud,
-    Instruction
+    Instruction,
   },
 
   data() {
     return {
       chat: [],
-      method: 'all'
+      method: 'all',
     }
-  }
+  },
 }
 </script>
 
-
 <style scoped>
-#grid{
+#grid {
   display: grid;
   grid-row-gap: 1em;
   grid-template-columns:
   /* 1 */ 1fr;
   grid-template-rows:
-  /* 1 */ auto
-  /* 2 */ auto
-  /* 3 */ 1fr
-  /* 4 */ auto;
+  /* 1 */
+    auto
+    /* 2 */ auto
+    /* 3 */ 1fr
+    /* 4 */ auto;
 }
-Options{
-  grid-column: 1; grid-row: 1;
-}
-
-Instruction{
-  grid-column: 1; grid-row: 2;
+Options {
+  grid-column: 1;
+  grid-row: 1;
 }
 
-Wordcloud{
-  grid-column: 1; grid-row: 3;
+Instruction {
+  grid-column: 1;
+  grid-row: 2;
 }
 
-Footer{
+Wordcloud {
+  grid-column: 1;
+  grid-row: 3;
+}
+
+Footer {
   /*grid-column: 1; grid-row: 4;*/
   position: absolute;
   left: 0;
   bottom: 0;
 }
-
 </style>

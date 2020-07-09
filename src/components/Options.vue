@@ -4,7 +4,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
-    <table style="width:100%">
+    <table style="width: 100%;">
       <tr>
         <th>
           Choose Folder
@@ -51,7 +51,7 @@
         </td>
         <td>
           <select id="meetingSelect" v-model="meeting">
-            <option value='' disabled>Select Meeting</option>
+            <option value="" disabled>Select Meeting</option>
             <option
               v-for="meetingOption in meetingOptions"
               :key="meetingOption"
@@ -87,7 +87,7 @@ export default {
       zoomFolder: '',
       meeting: '',
       polling: null,
-      zoom_chat: ''
+      zoom_chat: '',
     }
   },
   created() {
@@ -96,11 +96,11 @@ export default {
     if (
       app.getPath('home') &&
       fs.existsSync(
-        path.join(app.getPath('home'),'Documents', 'Zoom').toString()
+        path.join(app.getPath('home'), 'Documents', 'Zoom').toString()
       )
     ) {
       this.zoomFolder = path
-        .join(app.getPath('home'),'Documents', 'Zoom')
+        .join(app.getPath('home'), 'Documents', 'Zoom')
         .toString()
       this.load_meeting_options()
     } else if (
@@ -121,20 +121,21 @@ export default {
     }
   },
 
-  mounted() {
-  },
+  mounted() {},
 
   beforeDestroy() {
     clearInterval(this.polling)
   },
 
   methods: {
-    pollData: function() {
+    pollData: function () {
       this.polling = setInterval(() => {
         console.log('RETRIEVE_DATA_FROM_BACKEND')
         if (this.ready) {
           this.zoom_chat = fs
-            .readFileSync(path.join(this.zoomFolder, this.meeting, this.zoom_filename))
+            .readFileSync(
+              path.join(this.zoomFolder, this.meeting, this.zoom_filename)
+            )
             .toString()
         }
       }, 3000)
@@ -144,59 +145,57 @@ export default {
       this.meetingOptions = fs
         .readdirSync(this.zoomFolder, { withFileTypes: true })
         .filter((dirent) => dirent.isDirectory())
-        .map(dirent => dirent.name)
+        .map((dirent) => dirent.name)
         .reverse()
       this.meeting = this.meetingOptions[0]
     },
 
-    selectFolder: function() {
+    selectFolder: function () {
       dialog
         .showOpenDialog({ properties: ['openDirectory'] })
-        .then(result => {
+        .then((result) => {
           console.log(result.canceled)
           this.zoomFolder = result.filePaths[0]
           console.log(result.filePaths)
           this.load_meeting_options()
         })
-        .catch(err => {
+        .catch((err) => {
           console.log(err)
         })
-    }
+    },
   },
 
   watch: {
     proc_zoom_chat: {
-      handler: function(newChat) {
+      handler: function (newChat) {
         this.$emit('updateChat', newChat)
       },
-      deep: true
+      deep: true,
     },
     method: {
-      handler: function(newMethod) {
+      handler: function (newMethod) {
         this.$emit('updateMethod', newMethod)
       },
-      deep: true
-    }
+      deep: true,
+    },
   },
 
   computed: {
-    folderWithoutChatWarning: function() {
+    folderWithoutChatWarning: function () {
       return !fs.existsSync(
-        path
-          .join(this.zoomFolder, this.meeting, this.zoom_filename)
-          .toString()
+        path.join(this.zoomFolder, this.meeting, this.zoom_filename).toString()
       )
     },
 
-    ready: function() {
+    ready: function () {
       return this.zoomFolder != '' && this.meeting != '' && this.method != ''
     },
 
-    zoom_filename: function() {
+    zoom_filename: function () {
       return 'meeting_saved_chat.txt'
     },
 
-    proc_zoom_chat: function() {
+    proc_zoom_chat: function () {
       var split_zoom_chat = this.zoom_chat.split('\n')
       var proc_zoom_chat = []
       for (var i in split_zoom_chat) {
@@ -212,8 +211,8 @@ export default {
         }
       }
       return proc_zoom_chat
-    }
-  }
+    },
+  },
 }
 </script>
 

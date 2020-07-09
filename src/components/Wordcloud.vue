@@ -1,7 +1,7 @@
 <template>
   <div id="wordcloud">
     <div id="my_container"></div>
-    <canvas style="display: none" id="my_canvas"></canvas>
+    <canvas style="display: none;" id="my_canvas"></canvas>
   </div>
 </template>
 
@@ -17,15 +17,15 @@ export default {
 
   props: {
     chat: Array,
-    method: String
+    method: String,
   },
 
   methods: {
-    truncate: function(str, n) {
+    truncate: function (str, n) {
       return str.length > n ? str.substr(0, n - 1) + '...' : str
     },
 
-    update_wordcloud: function() {
+    update_wordcloud: function () {
       console.log(this.wordcloud)
       console.log(WordCloud.isSupported)
       var width = 1000
@@ -42,32 +42,32 @@ export default {
       WordCloud(
         [
           this.$el.querySelector('#my_canvas'),
-          this.$el.querySelector('#my_container')
+          this.$el.querySelector('#my_container'),
         ],
         {
           list: this.wordcloud,
           gridSize: Math.round((16 * width) / 1024),
-          weightFactor: function(size) {
+          weightFactor: function (size) {
             return (size * width * 20) / 1024
           },
           drawOutOfBound: false,
           shape: 'square',
-          rotateRatio: 0.2
+          rotateRatio: 0.2,
         }
       )
-    }
+    },
   },
 
   created() {
-    window.addEventListener("resize", this.update_wordcloud);
+    window.addEventListener('resize', this.update_wordcloud)
   },
 
   destroyed() {
-   window.removeEventListener("resize", this.update_wordcloud);
+    window.removeEventListener('resize', this.update_wordcloud)
   },
 
   computed: {
-    wordcloud: function() {
+    wordcloud: function () {
       var wordcloud = {}
       for (var i in this.chat) {
         var word = this.truncate(this.chat[i]['message'].trim(), 30)
@@ -81,22 +81,21 @@ export default {
       console.log(wordcloud)
       wordcloud = Object.entries(wordcloud)
       return wordcloud
-    }
+    },
   },
 
   watch: {
-    wordcloud: function() {
+    wordcloud: function () {
       this.update_wordcloud()
-    }
-  }
+    },
+  },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#my_container{
+#my_container {
   height: 100%;
   width: 100%;
 }
-
 </style>

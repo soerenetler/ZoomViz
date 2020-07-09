@@ -87,8 +87,7 @@ export default {
       zoomFolder: '',
       meeting: '',
       polling: null,
-      zoom_chat: '',
-      folderWithoutChatWarning: false
+      zoom_chat: ''
     }
   },
   created() {
@@ -143,14 +142,14 @@ export default {
       }, 3000)
     },
 
-  load_meeting_options: function() {
+    load_meeting_options: function () {
       this.meetingOptions = fs
-          .readdirSync(this.zoomFolder, { withFileTypes: true })
-          .filter(dirent => dirent.isDirectory())
-          .map(dirent => dirent.name)
-          .reverse()
+        .readdirSync(this.zoomFolder, { withFileTypes: true })
+        .filter((dirent) => dirent.isDirectory())
+        .map(dirent => dirent.name)
+        .reverse()
       this.meeting = this.meetingOptions[0]
-  },
+    },
 
     selectFolder: function() {
       dialog
@@ -168,14 +167,6 @@ export default {
   },
 
   watch: {
-    meeting: function() {
-      this.folderWithoutChatWarning = !fs.existsSync(
-        path
-          .resolve(this.zoomFolder, this.meeting, this.zoom_filename)
-          .toString()
-      )
-    },
-
     proc_zoom_chat: {
       handler: function(newChat) {
         this.$emit('updateChat', newChat)
@@ -191,6 +182,14 @@ export default {
   },
 
   computed: {
+    folderWithoutChatWarning: function() {
+      return !fs.existsSync(
+        path
+          .resolve(this.zoomFolder, this.meeting, this.zoom_filename)
+          .toString()
+      )
+    },
+
     ready: function() {
       return this.zoomFolder != '' && this.meeting != '' && this.method != ''
     },

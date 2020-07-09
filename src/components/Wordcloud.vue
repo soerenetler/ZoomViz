@@ -23,29 +23,9 @@ export default {
   methods: {
     truncate: function(str, n) {
       return str.length > n ? str.substr(0, n - 1) + '...' : str
-    }
-  },
+    },
 
-  computed: {
-    wordcloud: function() {
-      var wordcloud = {}
-      for (var i in this.chat) {
-        var word = this.truncate(this.chat[i]['message'].trim(), 30)
-        if (word[0] == this.method || this.method == 'all') {
-          if (!(word in wordcloud)) {
-            wordcloud[word] = 0
-          }
-          wordcloud[word] += 1
-        }
-      }
-      console.log(wordcloud)
-      wordcloud = Object.entries(wordcloud)
-      return wordcloud
-    }
-  },
-
-  watch: {
-    wordcloud: function() {
+    update_wordcloud: function() {
       console.log(this.wordcloud)
       console.log(WordCloud.isSupported)
       var width = 1000
@@ -75,6 +55,38 @@ export default {
           rotateRatio: 0.2
         }
       )
+    }
+  },
+
+  created() {
+    window.addEventListener("resize", this.update_wordcloud);
+  },
+
+  destroyed() {
+   window.removeEventListener("resize", this.update_wordcloud);
+  },
+
+  computed: {
+    wordcloud: function() {
+      var wordcloud = {}
+      for (var i in this.chat) {
+        var word = this.truncate(this.chat[i]['message'].trim(), 30)
+        if (word[0] == this.method || this.method == 'all') {
+          if (!(word in wordcloud)) {
+            wordcloud[word] = 0
+          }
+          wordcloud[word] += 1
+        }
+      }
+      console.log(wordcloud)
+      wordcloud = Object.entries(wordcloud)
+      return wordcloud
+    }
+  },
+
+  watch: {
+    wordcloud: function() {
+      this.update_wordcloud()
     }
   }
 }

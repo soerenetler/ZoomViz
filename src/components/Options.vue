@@ -97,27 +97,27 @@ export default {
     if (
       app.getPath('home') &&
       fs.existsSync(
-        path.resolve(app.getPath('home'),'Documents', 'Zoom').toString()
+        path.join(app.getPath('home'),'Documents', 'Zoom').toString()
       )
     ) {
       this.zoomFolder = path
-        .resolve(app.getPath('home'),'Documents', 'Zoom')
+        .join(app.getPath('home'),'Documents', 'Zoom')
         .toString()
       this.load_meeting_options()
     } else if (
       app.getPath('home') &&
-      fs.existsSync(
-        app.getPath('documents') + "\\" + 'Zoom'
-      )
+      fs.existsSync(path.join(app.getPath('documents'), 'Zoom'))
     ) {
-      this.zoomFolder = path
-        .resolve(app.getPath('documents'), 'Zoom')
-        .toString()
+      this.zoomFolder = path.join(app.getPath('documents'), 'Zoom').toString()
       this.load_meeting_options()
     } else {
       console.log(
         'Auto Zoom Folder does not exist: ' +
-          path.resolve(app.getPath('home'),'Documents', 'Zoom').toString()
+          path.resolve(app.join('home'), 'Documents', 'Zoom').toString()
+      )
+      console.log(
+        'Auto Zoom Folder does not exist: ' +
+          path.join(app.getPath('documents'), 'Zoom').toString()
       )
     }
   },

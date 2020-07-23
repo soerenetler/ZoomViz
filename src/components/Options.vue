@@ -204,7 +204,7 @@ export default {
           var time = splitted_line[0]
           var user = splitted_line[1].split(' : ')[0]
           var message = splitted_line[1].split(' : ')[1]
-          proc_zoom_chat.push({ time: time, user: user, message: message })
+          proc_zoom_chat.push({ time: time, user: user, message: message, line: i})
           console.log(time + ' --- ' + user + '---' + message)
         } else {
           console.log('line' + i + 'is skipped!')

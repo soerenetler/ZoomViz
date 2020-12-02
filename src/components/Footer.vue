@@ -1,7 +1,6 @@
 <template>
   <span id="footer">
-    Chattarize <span id="version">{{ version }}</span> - chattarize.de -
-    hello@soeren101.de
+    Chattarize - chattarize.de - hello@soeren101.de
     <div id="messages"></div>
     <div id="nav">
       <router-link to="/">Home</router-link> |
@@ -13,12 +12,6 @@
 <script>
 export default {
   name: 'Footer',
-
-  computed: {
-    version: function () {
-      return window.require('electron').remote.app.getVersion()
-    },
-  },
 }
 </script>
 

@@ -1,6 +1,11 @@
 <template>
   <ul id="flexbox">
-    <li class="flex-item" v-for="line in chat" :key="line.i" :title="line.message">
+    <li
+      class="flex-item"
+      v-for="line in chat"
+      :key="line.i"
+      :title="line.message"
+    >
       {{ truncate(line.message, 200) }}
     </li>
   </ul>

@@ -72,8 +72,6 @@ export default {
       chatfile: null,
       zoomFileHandle: null,
       method: 'all',
-      meetingOptions: [],
-      zoomFolder: '',
       meeting: '',
       polling: null,
       zoom_chat: '',
@@ -126,7 +124,7 @@ export default {
     },
 
     ready: function () {
-      return this.zoomFolder != '' && this.meeting != '' && this.method != ''
+      return this.meeting != ''
     },
 
     proc_zoom_chat: function () {
@@ -135,16 +133,18 @@ export default {
       for (var i in split_zoom_chat) {
         var splitted_line = split_zoom_chat[i].split('	')
         if (splitted_line.length == 2) {
-          var time = splitted_line[0]
-          var user = splitted_line[1].split(' : ')[0]
-          var message = splitted_line[1].split(' : ')[1]
-          proc_zoom_chat.push({
-            time: time,
-            user: user,
-            message: message,
-            line: i,
-          })
-          console.log(time + ' --- ' + user + '---' + message)
+            var time = splitted_line[0]
+            var user = splitted_line[1].split(' : ')[0]
+            var message = splitted_line[1].split(' : ')[1]
+            if (message[0] == this.method || this.method == 'all') {
+            proc_zoom_chat.push({
+              time: time,
+              user: user,
+              message: message,
+              line: i,
+            })
+            console.log(time + ' --- ' + user + '---' + message)
+          }
         } else {
           console.log('line' + i + 'is skipped!')
         }
@@ -157,10 +157,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#meetingSelect {
-  width: 75%;
-}
-
 ul {
   list-style-type: none;
   padding: 0;

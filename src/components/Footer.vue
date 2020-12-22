@@ -4,7 +4,8 @@
     <div id="messages"></div>
     <div id="nav">
       <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
+      <router-link to="/dataprivacy">Data Privacy</router-link> |
+      <router-link to="/imprint">Imprint</router-link>
     </div>
   </span>
 </template>

@@ -13,15 +13,17 @@
       <Flexbox class="carousel-cell" :chat="chat" :method="method" />
     </div>
     <transition name="fade" appear>
-      <div
-        class="modal-overlay"
-        v-if="browserNotSupported"
-      ></div>
+      <div class="modal-overlay" v-if="browserNotSupported"></div>
     </transition>
     <transition name="slide" appear>
       <div class="modal" v-if="browserNotSupported">
         <h1>Your browser is not supported!</h1>
-        <p>Curretly we only support Google Chrome in the newest Version. But we are working hard to also support other browsers. If you write a kind e-mail we might even work a little faster ;) chattarize@blauedaecher.com</p>
+        <p>
+          Curretly we only support Google Chrome in the newest Version. But we
+          are working hard to also support other browsers. If you write a kind
+          e-mail we might even work a little faster ;)
+          chattarize@blauedaecher.com
+        </p>
       </div>
     </transition>
   </div>
@@ -63,10 +65,10 @@ export default {
     })
   },
   computed: {
-     browserNotSupported: function () {
+    browserNotSupported: function () {
       return window.showOpenFilePicker == null
     },
-  }
+  },
 }
 </script>
 
@@ -105,56 +107,52 @@ Instruction {
 }
 
 Footer {
-  /*grid-column: 1; grid-row: 4;*/
-  position: absolute;
-  left: 0;
-  bottom: 0;
+  grid-column: 1;
+  grid-row: 4;
 }
 
-
-
 .modal-overlay {
- position: absolute;
- top: 0;
- left: 0;
- right: 0;
- bottom: 0;
- z-index: 98;
- background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 98;
+  background-color: rgba(0, 0, 0, 0.8);
 }
 
 .modal {
- position: fixed;
- top: 50%;
- left: 50%;
- transform: translate(-50%, -50%);
- z-index: 99;
- 
- width: 100%;
- max-width: 400px;
- background-color: #FFF;
- border-radius: 16px;
- 
- padding: 25px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+
+  width: 100%;
+  max-width: 400px;
+  background-color: #fff;
+  border-radius: 16px;
+
+  padding: 25px;
 }
 
 .fade-enter-active,
 .fade-leave-active {
- transition: opacity .5s;
+  transition: opacity 0.5s;
 }
 
 .fade-enter,
 .fade-leave-to {
- opacity: 0;
+  opacity: 0;
 }
 
 .slide-enter-active,
 .slide-leave-active {
- transition: transform .5s;
+  transition: transform 0.5s;
 }
 
 .slide-enter,
 .slide-leave-to {
- transform: translateY(-50%) translateX(100vw);
+  transform: translateY(-50%) translateX(100vw);
 }
 </style>

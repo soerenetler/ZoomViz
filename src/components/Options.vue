@@ -4,10 +4,10 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
-    <table style="width: 100%">
+    <table style="width: 100%;">
       <tr>
         <th>
-          Choose Zoom Chat
+          Zoom Chat
           <span
             class="material-icons"
             title="The Zoom folder can normally be found in your Documents directory."
@@ -15,7 +15,7 @@
           >
         </th>
         <th>
-          Choose Method
+          Marker
           <span
             class="material-icons"
             title="The Zoom folder can normally be found in your Documents directory."
@@ -50,7 +50,7 @@
             <option value="all">All</option>
             <option value="#"># Hashtag</option>
             <option value="!">! Exclamation mark</option>
-            <option value="?">? Question mark)</option>
+            <option value="?">? Question mark</option>
           </select>
         </td>
 
@@ -58,6 +58,8 @@
           <input type="checkbox" id="oneperperson" />
           <label for="oneperperson"> One entry per person</label>
           <br />
+          <input type="checkbox" id="excludeprivate" />
+          <label for="excludeprivate"> Exclude private messages</label>
         </td>
       </tr>
     </table>
@@ -72,7 +74,6 @@ export default {
       chatfile: null,
       zoomFileHandle: null,
       method: 'all',
-      meeting: '',
       polling: null,
       zoom_chat: '',
     }
@@ -109,12 +110,6 @@ export default {
       },
       deep: true,
     },
-    method: {
-      handler: function (newMethod) {
-        this.$emit('updateMethod', newMethod)
-      },
-      deep: true,
-    },
   },
 
   computed: {
@@ -123,20 +118,16 @@ export default {
       return 0
     },
 
-    ready: function () {
-      return this.meeting != ''
-    },
-
     proc_zoom_chat: function () {
       var split_zoom_chat = this.zoom_chat.split('\n')
       var proc_zoom_chat = []
       for (var i in split_zoom_chat) {
         var splitted_line = split_zoom_chat[i].split('	')
         if (splitted_line.length == 2) {
-            var time = splitted_line[0]
-            var user = splitted_line[1].split(' : ')[0]
-            var message = splitted_line[1].split(' : ')[1]
-            if (message[0] == this.method || this.method == 'all') {
+          var time = splitted_line[0]
+          var user = splitted_line[1].split(' : ')[0]
+          var message = splitted_line[1].split(' : ')[1]
+          if (message[0] == this.method || this.method == 'all') {
             proc_zoom_chat.push({
               time: time,
               user: user,
@@ -178,21 +169,21 @@ button {
   height: 40px;
   border-radius: 10px;
   background-color: white;
-  color: #4caf50;
-  border: 2px solid #4caf50; /* Green */
+  color: #18298c;
+  border: 2px solid #18298c; /* Green */
 
   transition-duration: 0.4s;
 }
 
 button:hover {
-  background-color: #4caf50; /* Green */
+  background-color: #18298c; /* Green */
   color: white;
   border: 2px solid white; /* Green */
 }
 
 select {
-  border: 2px solid #4caf50; /* Green */
-  color: #4caf50;
+  border: 2px solid #18298c; /* Green */
+  color: #18298c;
   background-color: white; /* Green */
   border-radius: 10px;
   height: 40px;
@@ -200,7 +191,7 @@ select {
 select:hover {
   border: 2px solid white; /* Green */
   color: white;
-  background-color: #4caf50; /* Green */
+  background-color: #18298c; /* Green */
   border-radius: 10px;
   height: 40px;
 }

@@ -28,6 +28,8 @@ export default {
 <style scoped>
 #instruction {
   font-size: 20px;
-  background-color: lightgrey;
+  background-color: #f2cf1d;
+  color: #18298c;
+  padding: 5px;
 }
 </style>

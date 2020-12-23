@@ -23,7 +23,8 @@
     "serve-static": "^1.14.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "wordcloud": "1.1.1"
+    "wordcloud": "1.1.1",
+    "chart.js": "^2.9.4"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

@@ -11,7 +11,9 @@ export default {
   name: 'Barchart',
 
   data() {
-    return {}
+    return {
+      barchart: null,
+    }
   },
 
   props: {
@@ -25,6 +27,12 @@ export default {
     },
 
     update_barchart: function () {
+      // if the chart is not undefined (e.g. it has been created)
+      // then destory the old one so we can create a new one later
+      if (self.myChart) {
+        self.myChart.destroy()
+      }
+
       var ctx = document.getElementById('barchart_canvas')
       var color = Chart.helpers.color
       window.chartColors = {
@@ -36,11 +44,8 @@ export default {
         purple: 'rgb(153, 102, 255)',
         grey: 'rgb(201, 203, 207)',
       }
-
-      console.log('==========')
-      console.log(ctx)
-      console.log(this.chart)
-      new Chart(ctx, {
+      
+      self.myChart = new Chart(ctx, {
         type: 'bar',
         data: {
           labels: Object.keys(this.chart),
@@ -57,7 +62,7 @@ export default {
           ],
         },
         options: {
-          maintainAspectRatio:false,
+          maintainAspectRatio: false,
           scales: {
             yAxes: [
               {
@@ -76,9 +81,7 @@ export default {
     //this.update_barchart()
   },
 
-  mounted() {
-    
-  },
+  mounted() {},
 
   destroyed() {},
 
@@ -87,12 +90,11 @@ export default {
       var wordcloud = {}
       for (var i in this.chat) {
         var word = this.truncate(this.chat[i]['message'].trim(), 30)
-          if (!(word in wordcloud)) {
-            wordcloud[word] = 0
-          }
-          wordcloud[word] += 1
+        if (!(word in wordcloud)) {
+          wordcloud[word] = 0
+        }
+        wordcloud[word] += 1
       }
-      console.log(wordcloud)
       return wordcloud
     },
   },

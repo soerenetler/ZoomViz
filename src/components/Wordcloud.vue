@@ -26,10 +26,7 @@ export default {
     },
 
     update_wordcloud: function () {
-      console.log(this.wordcloud)
-      console.log(WordCloud.isSupported)
       var width = 1000
-      console.log(width)
 
       var div = document.getElementById('wordcloud')
 

@@ -29,9 +29,7 @@ export default {
       return str.length > n ? str.substr(0, n - 1) + '...' : str
     },
 
-    update_wordcloud: function () {
-      console.log(this.wordcloud)
-    },
+    update_wordcloud: function () {},
   },
 
   created() {
@@ -54,7 +52,6 @@ export default {
           wordcloud[word] += 1
         }
       }
-      console.log(wordcloud)
       wordcloud = Object.entries(wordcloud)
       return wordcloud
     },

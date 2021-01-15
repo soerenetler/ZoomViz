@@ -14,20 +14,6 @@
         </td>
       </tr>
     </table>
-    <transition name="fade" appear>
-      <div class="modal-overlay" v-if="showImprint | showData" @click="showImprint=false"></div>
-    </transition>
-    <transition name="slide" appear>
-      <div class="modal" v-if="showImprint | showData">
-        <h1>Your browser is not supported!</h1>
-        <p>
-          Curretly we only support Google Chrome in the newest Version. But we
-          are working hard to also support other browsers. If you write a kind
-          e-mail we might even work a little faster ;)
-          chattarize@blauedaecher.com
-        </p>
-      </div>
-    </transition>
   </span>
 </template>
 

@@ -51,14 +51,17 @@
             <option value="#"># Hashtag</option>
             <option value="!">! Exclamation mark</option>
             <option value="?">? Question mark</option>
+            <option value="/">/ Slash</option>
+            <option value="+">+ Plus</option>
+            <option value="§">§ Section sign</option>
           </select>
         </td>
 
         <td>
-          <input type="checkbox" id="oneperperson" />
+          <input type="checkbox" id="oneperperson" v-model="oneperperson" />
           <label for="oneperperson"> One entry per person</label>
           <br />
-          <input type="checkbox" id="excludeprivate" />
+          <input type="checkbox" id="excludeprivate" v-model="excludeprivate" />
           <label for="excludeprivate"> Exclude private messages</label>
         </td>
       </tr>
@@ -71,6 +74,8 @@ export default {
   name: 'Options',
   data() {
     return {
+      oneperperson: false,
+      excludeprivate: false,
       chatfile: null,
       zoomFileHandle: null,
       method: 'all',
@@ -97,16 +102,65 @@ export default {
 
     selectFolder: async function () {
       ;[this.zoomFileHandle] = await window.showOpenFilePicker()
-      this.chatfile = await this.zoomFileHandle.getFile()
-      this.zoom_chat = await this.chatfile.text()
       this.pollData()
+    },
+
+    proc_zoom_chat: function (chat, method, oneperperson) {
+      var split_zoom_chat = chat.split('\n')
+      var proc_zoom_chat = []
+      var participants = new Set()
+      for (var i in split_zoom_chat) {
+        var splitted_line = split_zoom_chat[i].split('	')
+        if (splitted_line.length == 2) {
+          var time = splitted_line[0]
+          var user = splitted_line[1].split(' : ')[0]
+          var message = splitted_line[1].split(' : ')[1]
+          if (message[0] == method || method == 'all') {
+            if (!oneperperson || (oneperperson && !participants.has(user))) {
+              participants.add(user)
+              proc_zoom_chat.push({
+                time: time,
+                user: user,
+                message: message,
+                line: i,
+              })
+            }
+
+            console.log(time + ' --- ' + user + '---' + message)
+          }
+        } else {
+          console.log('line' + i + 'is skipped!')
+        }
+      }
+      return proc_zoom_chat
     },
   },
 
   watch: {
-    proc_zoom_chat: {
-      handler: function (newChat) {
-        this.$emit('updateChat', newChat)
+    method: {
+      handler: function (method) {
+        this.$emit(
+          'updateChat',
+          this.proc_zoom_chat(this.zoom_chat, method, this.oneperperson)
+        )
+      },
+      deep: true,
+    },
+    zoom_chat: {
+      handler: function (zoom_chat) {
+        this.$emit(
+          'updateChat',
+          this.proc_zoom_chat(zoom_chat, this.method, this.oneperperson)
+        )
+      },
+      deep: true,
+    },
+    oneperperson: {
+      handler: function (oneperperson) {
+        this.$emit(
+          'updateChat',
+          this.proc_zoom_chat(this.zoom_chat, this.method, oneperperson)
+        )
       },
       deep: true,
     },
@@ -116,31 +170,6 @@ export default {
     // if the selected file is not a zoom chat
     folderWithoutChatWarning: function () {
       return 0
-    },
-
-    proc_zoom_chat: function () {
-      var split_zoom_chat = this.zoom_chat.split('\n')
-      var proc_zoom_chat = []
-      for (var i in split_zoom_chat) {
-        var splitted_line = split_zoom_chat[i].split('	')
-        if (splitted_line.length == 2) {
-          var time = splitted_line[0]
-          var user = splitted_line[1].split(' : ')[0]
-          var message = splitted_line[1].split(' : ')[1]
-          if (message[0] == this.method || this.method == 'all') {
-            proc_zoom_chat.push({
-              time: time,
-              user: user,
-              message: message,
-              line: i,
-            })
-            console.log(time + ' --- ' + user + '---' + message)
-          }
-        } else {
-          console.log('line' + i + 'is skipped!')
-        }
-      }
-      return proc_zoom_chat
     },
   },
 }

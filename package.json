@@ -17,14 +17,14 @@
   "main": "background.js",
   "dependencies": {
     "@vue/cli": "^4.5.9",
+    "chart.js": "^2.9.4",
     "core-js": "^3.6.5",
     "express": "^4.17.1",
     "flickity": "^2.2.1",
     "serve-static": "^1.14.1",
     "vue": "^2.6.11",
     "vue-router": "^3.2.0",
-    "wordcloud": "1.1.1",
-    "chart.js": "^2.9.4"
+    "wordcloud": "1.1.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

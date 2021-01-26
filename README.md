@@ -1,18 +1,23 @@
-# real-world-vue
+# Chattarize
 
 ## Project setup
+### Install yarn
+You can find all information about installing yarn here: https://classic.yarnpkg.com/en/docs/install/
+
+### Install vue-cli-service
 ```
-npm install
+yarn global add @vue/cli
+```
+more information here: https://cli.vuejs.org/guide/installation.html
+
+### Install dependencies
+```
+yarn install
 ```
 
-### Compiles and hot-reloads for development
+### 
 ```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
+yarn serve
 ```
 
 ### Releasing

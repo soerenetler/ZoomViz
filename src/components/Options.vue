@@ -7,7 +7,7 @@
     <table style="width: 100%;">
       <tr>
         <th>
-          Choose Folder
+          Zoom Chat
           <span
             class="material-icons"
             title="The Zoom folder can normally be found in your Documents directory."
@@ -15,7 +15,7 @@
           >
         </th>
         <th>
-          Choose Meeting
+          Marker
           <span
             class="material-icons"
             title="The Zoom folder can normally be found in your Documents directory."
@@ -23,7 +23,7 @@
           >
         </th>
         <th>
-          Choose Method
+          Settings
           <span
             class="material-icons"
             title="The Zoom folder can normally be found in your Documents directory."
@@ -33,40 +33,36 @@
       </tr>
       <tr>
         <td>
-          <div>{{ zoomFolder }}</div>
-        </td>
-        <td>
           <div class="warning" v-if="folderWithoutChatWarning">
-            <strong>Warning!</strong> The folder does not contain a saved
-            meeting chat!
+            <strong>Warning!</strong> The selected file is not a meeting chat.
           </div>
         </td>
-
+        <td></td>
         <td></td>
       </tr>
 
       <tr>
         <td>
-          <button @click="selectFolder">Select Folder</button>
+          <button @click="selectFolder">Select Chat</button>
         </td>
         <td>
-          <select id="meetingSelect" v-model="meeting">
-            <option value="" disabled>Select Meeting</option>
-            <option
-              v-for="meetingOption in meetingOptions"
-              :key="meetingOption"
-              >{{ meetingOption }}</option
-            >
+          <select v-model="method">
+            <option value="all">All</option>
+            <option value="#"># Hashtag</option>
+            <option value="!">! Exclamation mark</option>
+            <option value="?">? Question mark</option>
+            <option value="/">/ Slash</option>
+            <option value="+">+ Plus</option>
+            <option value="§">§ Section sign</option>
           </select>
         </td>
 
         <td>
-          <select v-model="method">
-            <option value="all">All (Wordcloud)</option>
-            <option value="#"># (Wordcloud)</option>
-            <option value="!">! (Poll)</option>
-            <option value="?">? (Question)</option>
-          </select>
+          <input type="checkbox" id="oneperperson" v-model="oneperperson" />
+          <label for="oneperperson"> One entry per person</label>
+          <br />
+          <input type="checkbox" id="excludeprivate" v-model="excludeprivate" />
+          <label for="excludeprivate"> Exclude private messages</label>
         </td>
       </tr>
     </table>
@@ -74,52 +70,20 @@
 </template>
 
 <script>
-const { dialog, app } = window.require('electron').remote
-const fs = window.require('fs')
-const path = require('path')
-
 export default {
   name: 'Options',
   data() {
     return {
+      oneperperson: false,
+      excludeprivate: false,
+      chatfile: null,
+      zoomFileHandle: null,
       method: 'all',
-      meetingOptions: [],
-      zoomFolder: '',
-      meeting: '',
       polling: null,
       zoom_chat: '',
     }
   },
-  created() {
-    this.pollData()
-    // Auto select Zoom Folder
-    if (
-      app.getPath('home') &&
-      fs.existsSync(
-        path.join(app.getPath('home'), 'Documents', 'Zoom').toString()
-      )
-    ) {
-      this.zoomFolder = path
-        .join(app.getPath('home'), 'Documents', 'Zoom')
-        .toString()
-      this.load_meeting_options()
-    } else if (
-      app.getPath('home') &&
-      fs.existsSync(path.join(app.getPath('documents'), 'Zoom'))
-    ) {
-      this.zoomFolder = path.join(app.getPath('documents'), 'Zoom').toString()
-      this.load_meeting_options()
-    } else {
-      console.log(
-        'Auto Zoom Folder does not exist: ' +
-          path.resolve(app.join('home'), 'Documents', 'Zoom').toString()
-      )
-      console.log(
-        'Auto Zoom Folder does not exist: ' +
-          path.join(app.getPath('documents'), 'Zoom').toString()
-      )
-    }
-  },
+  created() {},
 
   mounted() {},
 
@@ -129,83 +93,41 @@ export default {
 
   methods: {
     pollData: function () {
-      this.polling = setInterval(() => {
+      this.polling = setInterval(async () => {
         console.log('RETRIEVE_DATA_FROM_BACKEND')
-        if (this.ready) {
-          this.zoom_chat = fs
-            .readFileSync(
-              path.join(this.zoomFolder, this.meeting, this.zoom_filename)
-            )
-            .toString()
-        }
+        this.chatfile = await this.zoomFileHandle.getFile()
+        this.zoom_chat = await this.chatfile.text()
       }, 3000)
     },
 
-    load_meeting_options: function () {
-      this.meetingOptions = fs
-        .readdirSync(this.zoomFolder, { withFileTypes: true })
-        .filter((dirent) => dirent.isDirectory())
-        .map((dirent) => dirent.name)
-        .reverse()
-      this.meeting = this.meetingOptions[0]
+    selectFolder: async function () {
+      ;[this.zoomFileHandle] = await window.showOpenFilePicker()
+      this.pollData()
     },
 
-    selectFolder: function () {
-      dialog
-        .showOpenDialog({ properties: ['openDirectory'] })
-        .then((result) => {
-          console.log(result.canceled)
-          this.zoomFolder = result.filePaths[0]
-          console.log(result.filePaths)
-          this.load_meeting_options()
-        })
-        .catch((err) => {
-          console.log(err)
-        })
-    },
-  },
-
-  watch: {
-    proc_zoom_chat: {
-      handler: function (newChat) {
-        this.$emit('updateChat', newChat)
-      },
-      deep: true,
-    },
-    method: {
-      handler: function (newMethod) {
-        this.$emit('updateMethod', newMethod)
-      },
-      deep: true,
-    },
-  },
-
-  computed: {
-    folderWithoutChatWarning: function () {
-      return !fs.existsSync(
-        path.join(this.zoomFolder, this.meeting, this.zoom_filename).toString()
-      )
-    },
-
-    ready: function () {
-      return this.zoomFolder != '' && this.meeting != '' && this.method != ''
-    },
-
-    zoom_filename: function () {
-      return 'meeting_saved_chat.txt'
-    },
-
-    proc_zoom_chat: function () {
-      var split_zoom_chat = this.zoom_chat.split('\n')
+    proc_zoom_chat: function (chat, method, oneperperson) {
+      var split_zoom_chat = chat.split('\n')
       var proc_zoom_chat = []
+      var participants = new Set()
       for (var i in split_zoom_chat) {
         var splitted_line = split_zoom_chat[i].split('	')
         if (splitted_line.length == 2) {
           var time = splitted_line[0]
           var user = splitted_line[1].split(' : ')[0]
           var message = splitted_line[1].split(' : ')[1]
-          proc_zoom_chat.push({ time: time, user: user, message: message })
-          console.log(time + ' --- ' + user + '---' + message)
+          if (message[0] == method || method == 'all') {
+            if (!oneperperson || (oneperperson && !participants.has(user))) {
+              participants.add(user)
+              proc_zoom_chat.push({
+                time: time,
+                user: user,
+                message: message,
+                line: i,
+              })
+            }
+
+            console.log(time + ' --- ' + user + '---' + message)
+          }
         } else {
           console.log('line' + i + 'is skipped!')
         }
@@ -213,15 +135,48 @@ export default {
       return proc_zoom_chat
     },
   },
+
+  watch: {
+    method: {
+      handler: function (method) {
+        this.$emit(
+          'updateChat',
+          this.proc_zoom_chat(this.zoom_chat, method, this.oneperperson)
+        )
+      },
+      deep: true,
+    },
+    zoom_chat: {
+      handler: function (zoom_chat) {
+        this.$emit(
+          'updateChat',
+          this.proc_zoom_chat(zoom_chat, this.method, this.oneperperson)
+        )
+      },
+      deep: true,
+    },
+    oneperperson: {
+      handler: function (oneperperson) {
+        this.$emit(
+          'updateChat',
+          this.proc_zoom_chat(this.zoom_chat, this.method, oneperperson)
+        )
+      },
+      deep: true,
+    },
+  },
+
+  computed: {
+    // if the selected file is not a zoom chat
+    folderWithoutChatWarning: function () {
+      return 0
+    },
+  },
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-#meetingSelect {
-  width: 75%;
-}
-
 ul {
   list-style-type: none;
   padding: 0;
@@ -243,21 +198,21 @@ button {
   height: 40px;
   border-radius: 10px;
   background-color: white;
-  color: #4caf50;
-  border: 2px solid #4caf50; /* Green */
+  color: #18298c;
+  border: 2px solid #18298c; /* Green */
 
   transition-duration: 0.4s;
 }
 
 button:hover {
-  background-color: #4caf50; /* Green */
+  background-color: #18298c; /* Green */
   color: white;
   border: 2px solid white; /* Green */
 }
 
 select {
-  border: 2px solid #4caf50; /* Green */
-  color: #4caf50;
+  border: 2px solid #18298c; /* Green */
+  color: #18298c;
   background-color: white; /* Green */
   border-radius: 10px;
   height: 40px;
@@ -265,7 +220,7 @@ select {
 select:hover {
   border: 2px solid white; /* Green */
   color: white;
-  background-color: #4caf50; /* Green */
+  background-color: #18298c; /* Green */
   border-radius: 10px;
   height: 40px;
 }

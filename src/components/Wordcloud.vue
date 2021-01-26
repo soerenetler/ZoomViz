@@ -1,7 +1,7 @@
 <template>
   <div id="wordcloud">
     <div id="my_container"></div>
-    <canvas style="display: none;" id="my_canvas"></canvas>
+    <canvas style="display: none" id="my_canvas"></canvas>
   </div>
 </template>
 
@@ -26,10 +26,7 @@ export default {
     },
 
     update_wordcloud: function () {
-      console.log(this.wordcloud)
-      console.log(WordCloud.isSupported)
       var width = 1000
-      console.log(width)
 
       var div = document.getElementById('wordcloud')
 
@@ -71,12 +68,10 @@ export default {
       var wordcloud = {}
       for (var i in this.chat) {
         var word = this.truncate(this.chat[i]['message'].trim(), 30)
-        if (word[0] == this.method || this.method == 'all') {
-          if (!(word in wordcloud)) {
-            wordcloud[word] = 0
-          }
-          wordcloud[word] += 1
+        if (!(word in wordcloud)) {
+          wordcloud[word] = 0
         }
+        wordcloud[word] += 1
       }
       console.log(wordcloud)
       wordcloud = Object.entries(wordcloud)

@@ -19,10 +19,10 @@
       <div class="modal" v-if="browserNotSupported">
         <h1>Your browser is not supported!</h1>
         <p>
-          Curretly we only support Google Chrome in the newest Version. But we
+          Currently we only support Google Chrome in the newest Version. But we
           are working hard to also support other browsers. If you write a kind
           e-mail we might even work a little faster ;)
-          chattarize@blauedaecher.com
+          soeren@blauedaecher.com
         </p>
       </div>
     </transition>

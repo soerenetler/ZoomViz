@@ -4,7 +4,7 @@
       rel="stylesheet"
       href="https://fonts.googleapis.com/icon?family=Material+Icons"
     />
-    <table style="width: 100%;">
+    <table style="width: 100%">
       <tr>
         <th>
           Zoom Chat
@@ -97,7 +97,7 @@ export default {
         console.log('RETRIEVE_DATA_FROM_BACKEND')
         this.chatfile = await this.zoomFileHandle.getFile()
         this.zoom_chat = await this.chatfile.text()
-      }, 3000)
+      }, 1000)
     },
 
     selectFolder: async function () {
@@ -110,23 +110,53 @@ export default {
       var proc_zoom_chat = []
       var participants = new Set()
       for (var i in split_zoom_chat) {
-        var splitted_line = split_zoom_chat[i].split('	')
-        if (splitted_line.length == 2) {
-          var time = splitted_line[0]
-          var user = splitted_line[1].split(' : ')[0]
-          var message = splitted_line[1].split(' : ')[1]
-          if (message[0] == method || method == 'all') {
-            if (!oneperperson || (oneperperson && !participants.has(user))) {
-              participants.add(user)
-              proc_zoom_chat.push({
-                time: time,
-                user: user,
-                message: message,
-                line: i,
-              })
-            }
+        var current_line = split_zoom_chat[i]
+        var time = null
+        var user = null
+        var message = null
 
-            console.log(time + ' --- ' + user + '---' + message)
+        const zoom_regex = /(\d\d:\d\d:\d\d)[\t]? ([^:]*) : (.*)/gm
+        const bbb_regex = /\[(\d\d:\d\d)\] ([^:]*) : (.*)/gm
+        let m
+
+        if ((m = zoom_regex.exec(current_line)) !== null) {
+          if (m.length == 4) {
+            time = m[1]
+            user = m[2]
+            message = m[3]
+            if (message[0] == method || method == 'all') {
+              if (!oneperperson || (oneperperson && !participants.has(user))) {
+                participants.add(user)
+                proc_zoom_chat.push({
+                  time: time,
+                  user: user,
+                  message: message,
+                  line: i,
+                })
+                console.log(
+                  'ZOOM NEW ---' + time + ' --- ' + user + '---' + message
+                )
+              }
+            }
+          }
+        }
+        if ((m = bbb_regex.exec(current_line)) !== null) {
+          if (m.length == 4) {
+            time = m[1]
+            user = m[2]
+            message = m[3]
+            if (message[0] == method || method == 'all') {
+              if (!oneperperson || (oneperperson && !participants.has(user))) {
+                participants.add(user)
+                proc_zoom_chat.push({
+                  time: time,
+                  user: user,
+                  message: message,
+                  line: i,
+                })
+                console.log('BBB ---' + time + ' --- ' + user + '---' + message)
+              }
+            }
           }
         } else {
           console.log('line' + i + 'is skipped!')

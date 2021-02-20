@@ -106,64 +106,78 @@ export default {
     },
 
     proc_zoom_chat: function (chat, method, oneperperson) {
-      var split_zoom_chat = chat.split('\n')
       var proc_zoom_chat = []
       var participants = new Set()
-      for (var i in split_zoom_chat) {
-        var current_line = split_zoom_chat[i]
-        var time = null
-        var user = null
-        var message = null
 
-        const zoom_regex = /(\d\d:\d\d:\d\d)[\t]? ([^:]*) : (.*)/gm
-        const bbb_regex = /\[(\d\d:\d\d)\] ([^:]*) : (.*)/gm
-        let m
+      var time = null
+      var user = null
+      var message = null
 
-        if ((m = zoom_regex.exec(current_line)) !== null) {
-          if (m.length == 4) {
-            time = m[1]
-            user = m[2]
-            message = m[3]
-            if (message[0] == method || method == 'all') {
-              if (!oneperperson || (oneperperson && !participants.has(user))) {
-                participants.add(user)
-                proc_zoom_chat.push({
-                  time: time,
-                  user: user,
-                  message: message,
-                  line: i,
-                })
-                console.log(
-                  'ZOOM NEW ---' + time + ' --- ' + user + '---' + message
-                )
-              }
+      const zoom_regex = /(\d\d:\d\d:\d\d)[\t]? ([^:]*) : (.*)/gm
+      const bbb_regex = /\[(\d\d:\d\d)\] ([^:]*) : (.*)/gm
+      const yulinc_regex = /(.*) {2}\((\d\d?.\d\d?.\d\d\d\d, \d\d:\d\d:\d\d)\):\r\n(.*?)\r\n-{48}/gm
+
+      for (const m of chat.matchAll(zoom_regex)){
+        if (m.length == 4) {
+          time = m[1]
+          user = m[2]
+          message = m[3]
+          if (message[0] == method || method == 'all') {
+            if (!oneperperson || (oneperperson && !participants.has(user))) {
+              participants.add(user)
+              proc_zoom_chat.push({
+                time: time,
+                user: user,
+                message: message
+              })
+              console.log(
+                'ZOOM NEW --- ' + time + ' --- ' + user + '---' + message
+              )
             }
           }
-        }
-        if ((m = bbb_regex.exec(current_line)) !== null) {
-          if (m.length == 4) {
-            time = m[1]
-            user = m[2]
-            message = m[3]
-            if (message[0] == method || method == 'all') {
-              if (!oneperperson || (oneperperson && !participants.has(user))) {
-                participants.add(user)
-                proc_zoom_chat.push({
-                  time: time,
-                  user: user,
-                  message: message,
-                  line: i,
-                })
-                console.log('BBB ---' + time + ' --- ' + user + '---' + message)
-              }
-            }
-          }
-        } else {
-          console.log('line' + i + 'is skipped!')
         }
       }
+      for (const m of chat.matchAll(bbb_regex)){
+        console.log('BBB' + m)
+        if (m.length == 4) {
+          time = m[1]
+          user = m[2]
+          message = m[3]
+          if (message[0] == method || method == 'all') {
+            if (!oneperperson || (oneperperson && !participants.has(user))) {
+              participants.add(user)
+              proc_zoom_chat.push({
+                time: time,
+                user: user,
+                message: message
+              })
+              console.log('BBB ---' + time + ' --- ' + user + '---' + message)
+            }
+          }
+        }
+      }
+      for (const m of chat.matchAll(yulinc_regex)){
+        console.log("Yulinc"+m)
+        if (m.length == 4) {
+          time = m[2]
+          user = m[1]
+          message = m[3]
+          if (message[0] == method || method == 'all') {
+            if (!oneperperson || (oneperperson && !participants.has(user))) {
+              participants.add(user)
+              proc_zoom_chat.push({
+                time: time,
+                user: user,
+                message: message
+              })
+              console.log('yulink ---' + time + ' --- ' + user + '---' + message)
+            }
+          }
+        }
+      }
+
       return proc_zoom_chat
-    },
+    }
   },
 
   watch: {

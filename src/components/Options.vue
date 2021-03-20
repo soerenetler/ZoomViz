@@ -105,7 +105,7 @@ export default {
       this.pollData()
     },
 
-    proc_zoom_chat: function (chat, method, oneperperson) {
+    proc_zoom_chat: function (chat, method, oneperperson, excludeprivate) {
       var proc_zoom_chat = []
       var participants = new Set()
 
@@ -123,7 +123,7 @@ export default {
           user = m[2]
           message = m[3]
           if (message[0] == method || method == 'all') {
-            if (!oneperperson || (oneperperson && !participants.has(user))) {
+            if ((!oneperperson || (oneperperson && !participants.has(user))) && (!excludeprivate || (excludeprivate && !user.includes("(Privately)")))) {
               participants.add(user)
               proc_zoom_chat.push({
                 time: time,
@@ -185,7 +185,7 @@ export default {
       handler: function (method) {
         this.$emit(
           'updateChat',
-          this.proc_zoom_chat(this.zoom_chat, method, this.oneperperson)
+          this.proc_zoom_chat(this.zoom_chat, method, this.oneperperson, this.excludeprivate)
         )
       },
       deep: true,
@@ -194,7 +194,7 @@ export default {
       handler: function (zoom_chat) {
         this.$emit(
           'updateChat',
-          this.proc_zoom_chat(zoom_chat, this.method, this.oneperperson)
+          this.proc_zoom_chat(zoom_chat, this.method, this.oneperperson, this.excludeprivate)
         )
       },
       deep: true,
@@ -203,7 +203,16 @@ export default {
       handler: function (oneperperson) {
         this.$emit(
           'updateChat',
-          this.proc_zoom_chat(this.zoom_chat, this.method, oneperperson)
+          this.proc_zoom_chat(this.zoom_chat, this.method, oneperperson, this.excludeprivate)
+        )
+      },
+      deep: true,
+    },
+     excludeprivate: {
+      handler: function (excludeprivate) {
+        this.$emit(
+          'updateChat',
+          this.proc_zoom_chat(this.zoom_chat, this.method, this.oneperperson, excludeprivate)
         )
       },
       deep: true,

@@ -12,6 +12,7 @@ new Vue({
 }).$mount('#app')
 
 Vue.use(VuePlausible, {
+  "apiHost": "https://analytics.chattarize.de/js/index.js"
   // see configuration section
 })
 
